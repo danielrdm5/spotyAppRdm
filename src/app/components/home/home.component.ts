@@ -10,13 +10,25 @@ import { SpotifyService } from '../../services/spotify.service';
 export class HomeComponent implements OnInit {
 
   newReleases: any[] = [];
-  
+  loading: boolean;
+  error = false;
+  mensajeError = '';
+
   constructor( private spotifyServ: SpotifyService ) {
+    this.loading = true;
+    this.error = false;
     this.spotifyServ.getNewReleases()
     .subscribe( (data: any) => {
-        this.newReleases = data.albums.items;
+        this.newReleases = data;
+        this.loading = false;
+      }, (errorServicio) =>
+      {
+        this.error = true;
+        this.mensajeError = errorServicio.error.error.message;
+        this.loading = false;
       }
     );
+    
   }
 
   ngOnInit(): void {
